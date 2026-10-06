@@ -26,7 +26,7 @@ Then grant **Accessibility** (for the hotkey and paste) and **Microphone** when 
 - **Hold right-⌥** to record, release to transcribe and paste.
 - **Double-tap right-⌥** to lock into continuous recording; tap again to stop.
 - **Esc** cancels a recording without transcribing.
-- The menu-bar mic icon has **Stop Recording** (if the overlay ever gets stuck), **Mute Sound Effects**, and **Quit**.
+- The menu-bar mic icon has **Stop Recording** (if the overlay ever gets stuck), **Mute Sound Effects**, **Custom Words**, and **Quit**.
 - A floating pill shows recording/transcribing state with a live level meter.
 - Pasting goes through the clipboard and restores whatever you had copied afterward.
 
