@@ -12,7 +12,7 @@ Or paste this to your agent:
 Clone https://github.com/mickrudolph/scribey and run ./install.sh. If it stops on a missing prerequisite, install it and run ./install.sh again.
 ```
 
-Then grant **Accessibility** (for the hotkey and paste) and **Microphone** when macOS asks, or in System Settings → Privacy & Security. If the hotkey doesn't respond after granting, quit Scribey from the menu bar and run `./install.sh` again.
+Then grant **Accessibility** (for the hotkey and paste) and **Microphone** when macOS asks, or in System Settings → Privacy & Security. The hotkey starts working within a second of granting Accessibility.
 
 ## Needs
 
@@ -32,7 +32,7 @@ Then grant **Accessibility** (for the hotkey and paste) and **Microphone** when 
 
 ## Custom words
 
-If it keeps misspelling a name or term, add it to `daemon/custom_words.txt`. The file explains the three formats (fuzzy match, exact aliases, context rules). Changes apply on the next dictation.
+If it keeps misspelling a name or term, add it from the menu bar: **Custom Words → Add Word…**. Click a word in that menu to remove it. The words live in `daemon/custom_words.txt` (**Open Word List…**), which explains the three formats (fuzzy match, exact aliases, context rules). Changes apply on the next dictation.
 
 ## Install details
 
@@ -40,7 +40,7 @@ If it keeps misspelling a name or term, add it to `daemon/custom_words.txt`. The
 
 Keep this folder: the transcription daemon and your custom words live here, and the app runs them from here.
 
-The app is signed ad-hoc, so macOS may ask for permissions again after a rebuild. If you have a signing certificate, `SCRIBEY_SIGNING_IDENTITY="<identity>" ./install.sh` avoids that.
+The app is signed ad-hoc, so macOS forgets its Accessibility permission after every rebuild (including re-running `./install.sh`). Remove Scribey from Privacy & Security → Accessibility with **–**, then add `/Applications/Scribey.app` again with **+**. If you have a signing certificate, `SCRIBEY_SIGNING_IDENTITY="<identity>" ./install.sh` avoids that.
 
 Logs: `/tmp/scribey.log` (app) and `~/Library/Application Support/Scribey/daemon.log` (transcription, with per-clip timing).
 

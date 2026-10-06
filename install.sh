@@ -64,5 +64,6 @@ launchctl load "$AGENT"
 
 echo
 echo "Scribey is running (mic icon in the menu bar) and starts at login."
-echo "Grant Accessibility and Microphone access when macOS asks. If the hotkey"
-echo "doesn't respond after granting, quit Scribey from the menu bar and run ./install.sh again."
+echo "Grant Accessibility and Microphone access when macOS asks; the hotkey starts"
+echo "working as soon as Accessibility is on. After a reinstall, remove Scribey from"
+echo "Privacy & Security -> Accessibility with - and add /Applications/Scribey.app again."

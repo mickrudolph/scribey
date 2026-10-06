@@ -29,6 +29,7 @@ final class HotkeyManager {
     private var runLoopSource: CFRunLoopSource?
     private var state: State = .idle
     private var doubleTapTimer: Timer?
+    private var tapRetryTimer: Timer?
 
     var onRecordStart: (() -> Void)?
     var onRecordStop: ((_ shouldTranscribe: Bool) -> Void)?
@@ -52,7 +53,21 @@ final class HotkeyManager {
         }
     }
 
+    /// Without Accessibility permission the tap can't be created. Keep retrying
+    /// so granting it takes effect right away instead of needing a relaunch;
+    /// with ad-hoc signing that happens after every rebuild.
     func start() {
+        guard !installTap() else { return }
+        print("Scribey: no Accessibility permission yet, hotkey will start once it's granted in System Settings")
+        tapRetryTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
+            guard let self, self.installTap() else { return }
+            timer.invalidate()
+            self.tapRetryTimer = nil
+            print("Scribey: Accessibility granted, hotkey active")
+        }
+    }
+
+    private func installTap() -> Bool {
         let mask = (1 << CGEventType.flagsChanged.rawValue) | (1 << CGEventType.keyDown.rawValue)
         guard let tap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
@@ -65,18 +80,18 @@ final class HotkeyManager {
                 return manager.handle(type: type, event: event)
             },
             userInfo: Unmanaged.passUnretained(self).toOpaque()
-        ) else {
-            print("Scribey: failed to create event tap — grant Accessibility permission in System Settings and relaunch.")
-            return
-        }
+        ) else { return false }
 
         eventTap = tap
         runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
         CGEvent.tapEnable(tap: tap, enable: true)
+        return true
     }
 
     func stop() {
+        tapRetryTimer?.invalidate()
+        tapRetryTimer = nil
         doubleTapTimer?.invalidate()
         doubleTapTimer = nil
         guard let tap = eventTap else { return }

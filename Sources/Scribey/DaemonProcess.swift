@@ -9,7 +9,7 @@ final class DaemonProcess {
     // Scribey.app is built into the root of the checkout, next to daemon/. If
     // the app has been moved (e.g. to /Applications), fall back to the checkout
     // path install.sh records in the "checkoutPath" default.
-    private let daemonDirectory: URL = {
+    static let daemonDirectory: URL = {
         let besideApp = Bundle.main.bundleURL.deletingLastPathComponent().appendingPathComponent("daemon")
         if FileManager.default.fileExists(atPath: besideApp.path) { return besideApp }
         if let checkout = UserDefaults.standard.string(forKey: "checkoutPath") {
@@ -19,11 +19,11 @@ final class DaemonProcess {
     }()
 
     private var pythonPath: URL {
-        daemonDirectory.appendingPathComponent(".venv/bin/python3")
+        Self.daemonDirectory.appendingPathComponent(".venv/bin/python3")
     }
 
     private var scriptPath: URL {
-        daemonDirectory.appendingPathComponent("transcribe_daemon.py")
+        Self.daemonDirectory.appendingPathComponent("transcribe_daemon.py")
     }
 
     func start() {

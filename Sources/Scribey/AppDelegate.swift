@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let recordingState = RecordingState()
     private var overlay: OverlayPanel?
     private var statusItem: NSStatusItem?
+    private let customWords = CustomWordsMenu()
     private var connectRetryTimer: Timer?
     private var currentRecordingPath: URL?
     private var daemonReady = false
@@ -68,6 +69,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         muteItem.target = self
         muteItem.state = soundsMuted ? .on : .off
         menu.addItem(muteItem)
+        let wordsItem = NSMenuItem(title: "Custom Words", action: nil, keyEquivalent: "")
+        wordsItem.submenu = customWords.menu
+        menu.addItem(wordsItem)
         menu.addItem(.separator())
         let quitItem = NSMenuItem(
             title: "Quit Scribey",
