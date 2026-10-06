@@ -1,0 +1,47 @@
+# Scribey
+
+Hold-to-dictate for macOS, fully offline. Hold right-⌥, talk, let go, and the text is pasted at your cursor. Transcription runs on your Mac with NVIDIA's Parakeet TDT v2 model via [parakeet-mlx](https://github.com/senstella/parakeet-mlx); audio never leaves the machine.
+
+```
+git clone https://github.com/mickrudolph/scribey && cd scribey && ./install.sh
+```
+
+Or paste this to your agent:
+
+```
+Clone https://github.com/mickrudolph/scribey and run ./install.sh. If it stops on a missing prerequisite, install it and run ./install.sh again.
+```
+
+Then grant **Accessibility** (for the hotkey and paste) and **Microphone** when macOS asks, or in System Settings → Privacy & Security. If the hotkey doesn't respond after granting, quit Scribey from the menu bar and run `./install.sh` again.
+
+## Needs
+
+- An Apple Silicon Mac
+- Xcode Command Line Tools (`xcode-select --install`)
+- Python 3.12 and ffmpeg (`brew install python@3.12 ffmpeg`)
+- ~2.5GB of disk for the model, downloaded once on first install
+
+## Using it
+
+- **Hold right-⌥** to record, release to transcribe and paste.
+- **Double-tap right-⌥** to lock into continuous recording; tap again to stop.
+- **Esc** cancels a recording without transcribing.
+- The menu-bar mic icon has **Stop Recording** (if the overlay ever gets stuck), **Mute Sound Effects**, and **Quit**.
+- A floating pill shows recording/transcribing state with a live level meter.
+- Pasting goes through the clipboard and restores whatever you had copied afterward.
+
+## Custom words
+
+If it keeps misspelling a name or term, add it to `daemon/custom_words.txt`. The file explains the three formats (fuzzy match, exact aliases, context rules). Changes apply on the next dictation.
+
+## Install details
+
+`./install.sh` builds the Python environment and downloads the model, builds and signs `Scribey.app` in this folder, and installs a LaunchAgent so Scribey starts at login and restarts if it crashes. Re-run it after pulling changes.
+
+Keep `Scribey.app` in this folder; it finds its transcription daemon next to it, so moving it to /Applications breaks it.
+
+The app is signed ad-hoc, so macOS may ask for permissions again after a rebuild. If you have a signing certificate, `SCRIBEY_SIGNING_IDENTITY="<identity>" ./install.sh` avoids that.
+
+Logs: `/tmp/scribey.log` (app) and `~/Library/Application Support/Scribey/daemon.log` (transcription, with per-clip timing).
+
+To remove everything: `./uninstall.sh`, then delete this folder.

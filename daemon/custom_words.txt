@@ -1,0 +1,33 @@
+# One word or short phrase per line, spelled exactly how you want it to
+# appear. Lines starting with # are ignored. Blank lines are ignored.
+#
+# Plain line -- fuzzy correction, not real vocabulary biasing: Parakeet
+# still transcribes the audio on its own, then anything in its output
+# that's "close enough" (spelling-wise) to a line below gets snapped to
+# that exact spelling. It won't rescue a wildly different mishearing, and
+# it only matches single words (not multi-word phrases) for now.
+#
+# "Canonical: alias1, alias2" line -- exact-match aliases. Use this for
+# known mishearings that don't spell close enough to trip the fuzzy match
+# (e.g. Parakeet hears "Claude" as "clod"). Any of the aliases gets
+# force-replaced with the canonical spelling, no similarity threshold.
+# Only add aliases that have no other legitimate meaning in your
+# dictation -- an ambiguous word (e.g. "cloud") will get wrongly forced
+# every time, so leave those as plain fuzzy entries or out entirely.
+#
+# "word: trigger1, trigger2 => Canonical" line -- context rule, for words
+# that ARE ambiguous on their own but not when followed by a specific
+# next word. Only replaces `word` with `Canonical` when the very next
+# word in the transcript is one of the triggers. Plain "cloud" (no
+# trigger following) is left alone.
+#
+# Takes effect on the next dictation -- no need to restart the daemon.
+#
+# Examples:
+# RainFocus
+# Claude: clod, claw
+# cloud: code, cowork, chat => Claude
+
+Claude: clod, claw
+cloud: code, cowork, chat => Claude
+RainFocus
