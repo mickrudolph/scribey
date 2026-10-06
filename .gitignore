@@ -4,3 +4,4 @@ daemon/.venv/
 __pycache__/
 spike-mic-test/
 .DS_Store
+daemon/custom_words.txt

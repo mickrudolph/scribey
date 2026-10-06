@@ -3,6 +3,7 @@ import difflib
 import json
 import os
 import re
+import shutil
 import signal
 import socket
 import struct
@@ -14,6 +15,9 @@ import soundfile as sf
 MODEL_NAME = "mlx-community/parakeet-tdt-0.6b-v2"
 SOCKET_PATH = os.path.expanduser("~/Library/Application Support/Scribey/scribey.sock")
 CUSTOM_WORDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "custom_words.txt")
+# Committed starter list. custom_words.txt is gitignored and seeded from this
+# once, so each person's edits stay local and never conflict with a git pull.
+CUSTOM_WORDS_DEFAULT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "custom_words.default.txt")
 
 # Parakeet (an RNNT/TDT model) has no prompt- or vocab-biasing mechanism at
 # decode time, unlike Whisper's initial_prompt. This is a post-hoc fuzzy
@@ -165,6 +169,10 @@ def apply_custom_words(text, custom_words, aliases, context_rules):
 
 
 def main():
+    if not os.path.exists(CUSTOM_WORDS_PATH) and os.path.exists(CUSTOM_WORDS_DEFAULT_PATH):
+        shutil.copyfile(CUSTOM_WORDS_DEFAULT_PATH, CUSTOM_WORDS_PATH)
+        log("Scribey daemon: created custom_words.txt from custom_words.default.txt")
+
     log("Scribey daemon: loading model (this can take a while on first run)...")
     import mlx.core as mx
     from parakeet_mlx import from_pretrained

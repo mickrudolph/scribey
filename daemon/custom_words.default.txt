@@ -1,3 +1,8 @@
+# Starter list. On first run Scribey copies this to custom_words.txt, which is
+# yours: edit that one (or use Custom Words in the menu bar). It isn't tracked
+# by git, so your changes stay on your machine. Delete it to start over from
+# this list.
+#
 # One word or short phrase per line, spelled exactly how you want it to
 # appear. Lines starting with # are ignored. Blank lines are ignored.
 #

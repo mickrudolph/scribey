@@ -34,6 +34,8 @@ Then grant **Accessibility** (for the hotkey and paste) and **Microphone** when 
 
 If it keeps misspelling a name or term, add it from the menu bar: **Custom Words → Add Word…**. Click a word in that menu to remove it. The words live in `daemon/custom_words.txt` (**Open Word List…**), which explains the three formats (fuzzy match, exact aliases, context rules). Changes apply on the next dictation.
 
+You start with a few defaults from `daemon/custom_words.default.txt`. Your list is yours: it isn't tracked by git, so your changes never conflict with a `git pull` and never end up in the repo. Delete `custom_words.txt` to start over from the defaults.
+
 ## Install details
 
 `./install.sh` builds the Python environment and downloads the model, builds and signs `Scribey.app` into /Applications, and installs a LaunchAgent so Scribey starts at login and restarts if it crashes. Re-run it after pulling changes.
