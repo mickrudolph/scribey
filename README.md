@@ -36,9 +36,9 @@ If it keeps misspelling a name or term, add it to `daemon/custom_words.txt`. The
 
 ## Install details
 
-`./install.sh` builds the Python environment and downloads the model, builds and signs `Scribey.app` in this folder, and installs a LaunchAgent so Scribey starts at login and restarts if it crashes. Re-run it after pulling changes.
+`./install.sh` builds the Python environment and downloads the model, builds and signs `Scribey.app` into /Applications, and installs a LaunchAgent so Scribey starts at login and restarts if it crashes. Re-run it after pulling changes.
 
-Keep `Scribey.app` in this folder; it finds its transcription daemon next to it, so moving it to /Applications breaks it.
+Keep this folder: the transcription daemon and your custom words live here, and the app runs them from here.
 
 The app is signed ad-hoc, so macOS may ask for permissions again after a rebuild. If you have a signing certificate, `SCRIBEY_SIGNING_IDENTITY="<identity>" ./install.sh` avoids that.
 

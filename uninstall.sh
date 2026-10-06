@@ -7,6 +7,7 @@ AGENT="$HOME/Library/LaunchAgents/$LABEL.plist"
 launchctl unload "$AGENT" 2>/dev/null || true
 rm -f "$AGENT"
 pkill -x Scribey 2>/dev/null || true
+rm -rf /Applications/Scribey.app
 rm -rf "$HOME/Library/Application Support/Scribey"
 tccutil reset Accessibility "$LABEL" >/dev/null 2>&1 || true
 tccutil reset Microphone "$LABEL" >/dev/null 2>&1 || true

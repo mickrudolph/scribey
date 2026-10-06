@@ -127,6 +127,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard daemonReady else {
             print("Scribey: right-Option pressed but daemon not ready yet, ignoring")
             recordingState.phase = .notReady
+            overlay?.show()
             return
         }
         print("Scribey: recording started")
@@ -147,6 +148,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func handleRecordStop(shouldTranscribe: Bool) {
         guard currentRecordingPath != nil || recordingState.phase != .idle else {
             print("Scribey: recordStop called but nothing was recording, ignoring")
+            return
+        }
+        // Nothing was recorded; just take down the "Starting up…" pill.
+        guard recordingState.phase != .notReady else {
+            recordingState.phase = .idle
+            overlay?.hide()
             return
         }
         playSound("Pop")

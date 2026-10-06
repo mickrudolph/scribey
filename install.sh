@@ -6,6 +6,7 @@ cd "$(dirname "$0")"
 ROOT="$(pwd)"
 LABEL="com.mickrudolph.scribey"
 AGENT="$HOME/Library/LaunchAgents/$LABEL.plist"
+APP="/Applications/Scribey.app"
 
 if [ "$(uname -m)" != "arm64" ]; then
     echo "Scribey needs an Apple Silicon Mac (the model runs on MLX)." >&2
@@ -23,7 +24,13 @@ fi
 [ -x daemon/.venv/bin/python3 ] || bash daemon/setup_venv.sh
 bash build-release.sh
 
-# The agent points at this checkout, so it is generated here rather than committed.
+pkill -x Scribey 2>/dev/null || true
+rm -rf "$APP"
+mv Scribey.app "$APP"
+# The app lives in /Applications but the daemon stays here; this is how it finds daemon/.
+defaults write "$LABEL" checkoutPath "$ROOT"
+
+# Generated rather than committed so it matches this machine's paths.
 mkdir -p "$HOME/Library/LaunchAgents"
 cat > "$AGENT" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -34,7 +41,7 @@ cat > "$AGENT" <<PLIST
     <string>$LABEL</string>
     <key>ProgramArguments</key>
     <array>
-        <string>$ROOT/Scribey.app/Contents/MacOS/Scribey</string>
+        <string>$APP/Contents/MacOS/Scribey</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

@@ -9,7 +9,7 @@ Swift Package Manager executable (`.app` bundle, no Xcode project) + a long-live
 - **Swift app** (`Sources/Scribey/`) — hotkey capture (`HotkeyManager.swift`), mic recording (`AudioRecorder.swift`), clipboard paste (`PasteboardBridge.swift`), overlay pill UI (`OverlayPanel.swift`/`OverlayView.swift`/`WaveformView.swift`), daemon process management (`DaemonProcess.swift`), socket client (`TranscriptionClient.swift`).
 - **Python daemon** (`daemon/transcribe_daemon.py`) — loads NVIDIA's Parakeet TDT v2 model once via `parakeet-mlx` (Apple Silicon MLX, ~2.5GB, `mlx-community/parakeet-tdt-0.6b-v2` from Hugging Face) and stays warm, serving transcription over a Unix socket (`~/Library/Application Support/Scribey/scribey.sock`) with length-prefixed JSON framing. Fully offline, no cloud calls.
 
-The daemon is found relative to the app bundle (`DaemonProcess.swift`), so `Scribey.app` must stay in the checkout root.
+`install.sh` moves the built `Scribey.app` to /Applications while `daemon/` stays in the checkout. `DaemonProcess.swift` looks for `daemon/` beside the bundle first, then falls back to the `checkoutPath` default that `install.sh` writes. If neither exists, the app sits in "Starting up…" forever.
 
 ## Known gotchas
 
@@ -30,13 +30,12 @@ The daemon is found relative to the app bundle (`DaemonProcess.swift`), so `Scri
 
 ## Launch on login
 
-`install.sh` generates a LaunchAgent (`~/Library/LaunchAgents/com.mickrudolph.scribey.plist`) pointing at this checkout — starts at login, `KeepAlive` restarts it on crash. Points at `Scribey.app/Contents/MacOS/Scribey` directly, so after `build-release.sh` overwrites the bundle in place, `launchctl unload`/`load` (or quit+relaunch) to pick up the new binary.
+`install.sh` generates a LaunchAgent (`~/Library/LaunchAgents/com.mickrudolph.scribey.plist`) pointing at `/Applications/Scribey.app/Contents/MacOS/Scribey` — starts at login, `KeepAlive` restarts it on crash. Re-running `install.sh` replaces the app and reloads the agent.
 
 ## Rebuilding
 
 ```
-bash build-release.sh   # builds, assembles Scribey.app, codesigns with entitlements
-open Scribey.app
+./install.sh   # builds, signs, installs to /Applications, reloads the login agent
 ```
 
 First-time setup is `./install.sh` (venv + model download, build, LaunchAgent); `./uninstall.sh` reverses it. See `README.md`.

@@ -3,3 +3,4 @@ Scribey.app/
 daemon/.venv/
 __pycache__/
 spike-mic-test/
+.DS_Store

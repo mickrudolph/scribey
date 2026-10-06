@@ -6,12 +6,17 @@ final class DaemonProcess {
 
     var onExitUnexpectedly: (() -> Void)?
 
-    // Scribey.app is built into the root of the checkout, next to daemon/, so
-    // the daemon is found relative to the bundle rather than a hardcoded path.
-    // Moving the .app out of the checkout (e.g. to /Applications) breaks this.
-    private let daemonDirectory = Bundle.main.bundleURL
-        .deletingLastPathComponent()
-        .appendingPathComponent("daemon")
+    // Scribey.app is built into the root of the checkout, next to daemon/. If
+    // the app has been moved (e.g. to /Applications), fall back to the checkout
+    // path install.sh records in the "checkoutPath" default.
+    private let daemonDirectory: URL = {
+        let besideApp = Bundle.main.bundleURL.deletingLastPathComponent().appendingPathComponent("daemon")
+        if FileManager.default.fileExists(atPath: besideApp.path) { return besideApp }
+        if let checkout = UserDefaults.standard.string(forKey: "checkoutPath") {
+            return URL(fileURLWithPath: checkout).appendingPathComponent("daemon")
+        }
+        return besideApp
+    }()
 
     private var pythonPath: URL {
         daemonDirectory.appendingPathComponent(".venv/bin/python3")
